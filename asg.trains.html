@@ -1,0 +1,133 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<!-- saved from url=(0067)https://www.cs.uky.edu/~raphael/courses/CS315/prog1/asg.trains.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<style> code {font-size: 15px; color: blue;} </style>
+<title></title></head><body>
+<div style="text-align:center;"><h1>Programming Assignment: Trains</h1></div>
+<h2>1. Train simulation</h2>
+<p>
+Write a program that simulates trains at a switching station.
+</p><p>
+At the beginning of the simulation,
+there are <i>n</i> trains.
+Each starts with <i>c</i> cars.  Each car has a fixed size <i>s</i> that limits
+how much it can carry.  The sizes of the cars in each train are
+1 ... <i>c</i>, from the front to the back of the train.
+Trains are loaded with more valuable materials toward the back of the train,
+so the <i>value</i> of a train is
+the sum of <i>p</i>*<i>s</i>, where <i>p</i> is the
+position of each car (starting at 1) and <i>s</i> is its size.
+So the starting <i>value</i> of each train is
+1*1 + 2*2 + ... + <i>c</i>*<i>c</i> = <i>c</i>(<i>c</i>+1)(2<i>c</i>+1)/6.
+</p><p>
+At each step, the simulation tosses an <i>n</i>-sided die, which indicates which train
+is the donor of this step.
+The simulation then tosses tosses a 2-sided die, indicating whether to remove a car from 
+the front (if the die shows 1) or the back of the donor train (if the die shows
+2).  Ths simulation then tosses
+an <i>n</i>-sided die, indicating which
+train accepts the donated car.  It is possible for the donor to get its own
+car back.  The accepting train puts the donated car at its front.
+When a car moves to a new position, it retains its original size, but the
+values of the train it left and the train it joins do change, because cars are
+now in a different position.
+</p><p>
+The simulation ends when any train becomes empty or <i>t</i> steps,
+whichever comes first.
+</p><h2>2. What to do</h2>
+<p>
+Write a program called <code>trains</code> that simulates the switching station.
+This program must take <i>n</i>, <i>c</i>, and <i>t</i> as command-line
+parameters.
+The program must fail gently if any of these parameters is ridiculous,
+such as <i>n</i> = 0 or <i>c</i> = -5.  
+The program must read a stream of integers from standard input as its source of
+randomness; this feature allows us to test the program in a deterministic way.
+<b>After each step</b>, the program should print (to standard output) which train
+donates a car (front or back) to
+which recipient and the value of each train after the step.
+<b>When the simulation finishes</b> (either because a train has become empty or the
+number of steps has reached its limit), the program prints which train has the
+largest value (if there is a tie, select the earliest train in the collection).
+</p><p>
+The program must use a doubly-linked list to implement the trains
+You <b>must not</b> use a library routine (such as C++ <code>std::list</code> or Java
+<code>java.util.LinkedList</code>) for
+linked lists; you must write your own routines.
+This restriction is frustrating, but the point of the exercise is to learn how
+these lists work.
+You may use array, <b>struct</b>, and <b>class</b> elements, but not C++
+<code>vector</code><i>s</i> or Java <code>List</code><i>s</i>.
+\fBDo not use code you find on the Internet; you will get 0 points and be
+charged with academic misconduct if we detect any such code.\fP
+</p><p>
+Try to make the program modular, with separate routines for the main loop,
+for reading the next random number, for evaluating the value of a train, and for
+donating and accepting a car.
+</p><h2>3. Useful tools</h2>
+<p>
+You have access to some useful tools.  First, there is a sample
+<code>Makefile</code> at
+<code><a href="http://www.cs.uky.edu/~raphael/courses/CS315/prog1/Makefile">http://www.cs.uky.edu/~raphael/courses/CS315/prog1/Makefile</a></code>.
+It has a <i>run</i> target that compiles the program (either <code>trains.c</code> or
+<code>trains.cpp</code>) and runs it.  Feel free to modify <code>Makefile</code>.
+</p><p>
+A second tool is <code>randGen.pl</code>,
+a program to generate an appropriate stream of pseudo-random numbers
+in the range 0 .. 2<sup>31</sup>‒1.  The <code>Makefile</code>
+automatically gets a copy of this tool for you; it is 
+stored at <code><a href="http://www.cs.uky.edu/~raphael/courses/CS315/utils/randGen.pl">http://www.cs.uky.edu/~raphael/courses/CS315/utils/randGen.pl</a></code>.  This
+program, written in Perl, takes
+an optional integer parameter to seed the random-number generator if
+you want reproducable results.  Here is how you can invoke it with <i>trains</i>,
+seeding the random-number generator to <code>82</code> and setting <code>n=4</code>,
+<code>c=20</code>, and <code>t=100</code>:
+</p><pre>randGen.pl 82 | train<i>s</i> 4 20 100
+</pre>
+<p>
+To convert a large pseudo-random integer <i>x</i> to one in the range 1..<i>y</i>,
+use this formula:
+<br>
+(<i>x</i> % <i>y</i>) + 1.  Here, <code>%</code> is the modulus
+operator.
+</p><p>
+<b>Warning</b>:  If you run <code>randGen.pl</code> by itself, it generates an unbounded
+list of numbers.  You should always pipe its output into another program, such
+as <code>trains</code> or <code>less</code>.
+</p><p>
+You can also get a working program that satisfies the specifications at 
+<code><a href="http://www.cs.uky.edu/~raphael/courses/CS315/prog1/workingTrains">http://www.cs.uky.edu/~raphael/courses/CS315/prog1/workingTrains</a></code>.  The
+<code>Makefile</code> mentioned above automatically gets a copy of this file for you if
+you make <i>runWorking</i>.
+</p><h2>4. What to hand in</h2>
+<p>
+Submit via Canvas a Zip file containing
+(1) a copy of your program, (2) <code>Makefile</code>, (3) a <code>README</code> file with external
+documentation, and (4) a file <code>output.txt</code> created via
+</p><pre>% randGen.pl 49 | trains 5 6 1000 &gt; output.txt
+</pre>
+The <code>Makefile</code> mentioned above has a <i>zipAll</i> target that creates a
+package ready to submit.
+<h2>5. Extra credit ideas</h2>
+<p>
+Make sure your program is running correctly before attempting any extra credit.
+You get no extra credit for programs submitted late.
+If you do extra credit, mention what you have done in your <code>README</code> file.
+</p><ol>
+<li>
+
+Modify the rules of the simulation.  For instance, trains can maintain order
+sorted by size, or
+they can always donate the largest-size car.
+If you modify the rules, you must also turn in a version of the program using
+the standard rules.
+</li><li>
+
+Compute and print running statistics, such as the average train value or the
+entropy of the train values.  
+</li><li>
+
+You may invent other extra-credit ideas, but be sure to document them.
+</li></ol>
+
+</body></html>
